@@ -38,7 +38,7 @@ describe("POST /recommendations", () => {
     });
 
     it("should answer with status 200 for valid body", async () => {
-        const body = createBody("Teste", "https://www.youtube.com");
+        const body = createBody("Teste", "https://www.youtube.com/watch?v=uLv20oZqWUI");
 
         const response = await supertest(app).post("/recommendations").send(body);
 
