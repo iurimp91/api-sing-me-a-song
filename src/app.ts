@@ -9,4 +9,6 @@ app.use(express.json());
 
 app.post("/recommendations", eventController.postRecommendation);
 
+app.post("/recommendations/:id/upvote", eventController.recommendationUpVote);
+
 export default app;

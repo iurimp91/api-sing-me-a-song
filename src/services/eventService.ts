@@ -4,4 +4,14 @@ async function createRecommendation(body: Object) {
     await eventRepository.insertRecommendation(body);
 }
 
-export { createRecommendation };
+async function vote(id: Number) {
+    const score = await eventRepository.getScore(id);
+    
+    if (score === false) return false;
+    
+    const newScore = score + 1;
+    
+    await eventRepository.insertVote(id, newScore);
+}
+
+export { createRecommendation, vote };
