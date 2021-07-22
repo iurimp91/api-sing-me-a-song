@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest -i",
+    "test": "NODE_ENV=test npx jest -i",
     "build": "npx tsc --outDir dist",
     "start": "node dist/server.js",
     "postinstall": "npm run build",
@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "pg": "^8.6.0"
   }
