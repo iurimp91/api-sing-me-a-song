@@ -1,3 +1,4 @@
+import { response } from "express";
 import { QueryResult } from "pg";
 import connection from "../database";
 
@@ -64,7 +65,7 @@ async function selectRandomRecommendation(random: Number): Promise<Object> {
         `);
     }
     
-    return result.rows[0];
+    return result.rows[0] === undefined ? 404 : result.rows[0];
 }
 
 export {

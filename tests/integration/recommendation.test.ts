@@ -101,6 +101,25 @@ describe("POST /recommendations/:id/downvote", () => {
     });
 });
 
-// describe("POST /recommendations/:id/downvote", () => {
-//     it("should answer with status ")
-// });
+describe("GET /recommendations/random", () => {
+    it("should answer with status 404 if there are no recommendations", async () => {
+        await connection.query(`DELETE FROM recommendations`);
+
+        const response = await supertest(app).get("/recommendations/random");
+
+        expect(response.status).toEqual(404);
+    });
+
+    it("should answer with an object if there are recommendations", async () => {
+        const response = await supertest(app).get("/recommendations/random");
+
+        expect(response.body).toEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                name: expect.any(String),
+                youtubeLink: expect.any(String),
+                score: expect.any(Number)
+            })
+        );
+    });
+});

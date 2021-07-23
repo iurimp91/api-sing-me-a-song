@@ -52,7 +52,7 @@ async function getRandomRecommendation(eq: Request, res: Response) {
     try {
         const result = await eventService.getRandomRecommendation();
 
-        return res.send(result);
+        return result === 404 ? res.sendStatus(404) : res.send(result);
     } catch (e) {
         const status = sendError(e);
         return res.sendStatus(status);
