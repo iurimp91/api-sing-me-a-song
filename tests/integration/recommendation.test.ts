@@ -13,6 +13,7 @@ beforeEach(async () => {
     await clearDatabase();
     validId = await insertRecommendation("Teste1", "https://www.youtube.com/watch?v=uLv20oZqWUI", 0);
     invalidId = await insertRecommendation("Teste2", "https://www.youtube.com/watch?v=uLv20oZqWUI", -5);
+    await insertRecommendation("Teste3", "https://www.youtube.com/watch?v=uLv20oZqWUI", 30);
 });
 
 afterAll(async () => {
@@ -121,5 +122,32 @@ describe("GET /recommendations/random", () => {
                 score: expect.any(Number)
             })
         );
+    });
+});
+
+describe("GET /recommendations/top/:amount", () => {
+    it("should answer with status 404 if there are no recommendations", async () => {
+        await connection.query(`DELETE FROM recommendations`);
+
+        const response = await supertest(app).get("/recommendations/top/2");
+
+        expect(response.status).toEqual(404);
+    });
+
+    it("should answer with an sorted (desc) array of objects if there are recommendations", async () => {
+        const response = await supertest(app).get("/recommendations/top/2");
+        
+        expect(response.body).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    id: expect.any(Number),
+                    name: expect.any(String),
+                    youtubeLink: expect.any(String),
+                    score: expect.any(Number)
+                })
+            ])
+        );
+
+        expect(response.body[0].score > response.body[1].score).toEqual(true);
     });
 });

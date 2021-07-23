@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { bodyValidation, voteValidation, amountValidation } from "../validations/recommendationValidation";
 
 import * as eventService from "../services/eventService";
-import { valid } from "joi";
 
 async function postRecommendation(req: Request, res: Response) {
     try {
@@ -65,7 +64,7 @@ async function getTopRecommendation(req: Request, res: Response) {
 
         const result = await eventService.getTopRecommendation(validAmount);
 
-        return res.send(result);
+        return result === 404 ? res.sendStatus(404) : res.send(result);
     } catch (e) {
         const status = sendError(e);
         return res.sendStatus(status);

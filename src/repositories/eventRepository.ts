@@ -1,4 +1,3 @@
-import { response } from "express";
 import { QueryResult } from "pg";
 import connection from "../database";
 
@@ -75,7 +74,7 @@ async function selectTopRecommendation(amount: Number) {
         LIMIT $1    
     `, [amount]);
 
-    return result.rows;
+    return result.rows[0] === undefined ? 404 : result.rows;
 }
 
 export {

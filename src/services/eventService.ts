@@ -1,4 +1,3 @@
-import { QueryResult } from "pg";
 import * as eventRepository from "../repositories/eventRepository";
 
 async function createRecommendation(body: Object) {
