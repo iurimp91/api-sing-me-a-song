@@ -26,3 +26,13 @@ export async function voteValidation(params: Object): Promise<Number> {
     
     return validParams.id;
 }
+
+export async function amountValidation(params: Object): Promise<Number> {
+    const schema = joi.object({
+        amount: joi.number().integer().min(1).required()
+    });
+
+    const validParams = await schema.validateAsync(params);
+    
+    return validParams.amount;
+}

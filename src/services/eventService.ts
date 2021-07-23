@@ -37,4 +37,16 @@ async function getRandomRecommendation() {
     return response;
 }
 
-export { createRecommendation, upVote, downVote, getRandomRecommendation };
+async function getTopRecommendation(amount: Number) {
+    const response = await eventRepository.selectTopRecommendation(amount);
+
+    return response;
+}
+
+export {
+    createRecommendation,
+    upVote,
+    downVote,
+    getRandomRecommendation,
+    getTopRecommendation
+};

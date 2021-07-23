@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-import { bodyValidation, voteValidation } from "../validations/recommendationValidation";
+import { bodyValidation, voteValidation, amountValidation } from "../validations/recommendationValidation";
 
 import * as eventService from "../services/eventService";
-import { QueryResult } from "pg";
+import { valid } from "joi";
 
 async function postRecommendation(req: Request, res: Response) {
     try {
@@ -48,11 +48,24 @@ async function recommendationDownVote(req: Request, res: Response) {
     }
 }
 
-async function getRandomRecommendation(eq: Request, res: Response) {
+async function getRandomRecommendation(req: Request, res: Response) {
     try {
         const result = await eventService.getRandomRecommendation();
 
         return result === 404 ? res.sendStatus(404) : res.send(result);
+    } catch (e) {
+        const status = sendError(e);
+        return res.sendStatus(status);
+    }
+}
+
+async function getTopRecommendation(req: Request, res: Response) {
+    try {
+        const validAmount = await amountValidation(req.params);
+
+        const result = await eventService.getTopRecommendation(validAmount);
+
+        return res.send(result);
     } catch (e) {
         const status = sendError(e);
         return res.sendStatus(status);
@@ -65,6 +78,7 @@ function sendError(e: Error): number {
         e.message.includes("name")
         || e.message.includes("youtubeLink")
         || e.message.includes("id")
+        || e.message.includes("amount")
     ) {
         return 400;
     } else {
@@ -76,5 +90,6 @@ export {
     postRecommendation,
     recommendationUpVote,
     recommendationDownVote,
-    getRandomRecommendation 
+    getRandomRecommendation,
+    getTopRecommendation
 };

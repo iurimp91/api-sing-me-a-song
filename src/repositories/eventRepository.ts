@@ -68,10 +68,21 @@ async function selectRandomRecommendation(random: Number): Promise<Object> {
     return result.rows[0] === undefined ? 404 : result.rows[0];
 }
 
+async function selectTopRecommendation(amount: Number) {
+    const result = await connection.query(`
+        SELECT * FROM recommendations
+        ORDER BY score DESC
+        LIMIT $1    
+    `, [amount]);
+
+    return result.rows;
+}
+
 export {
     insertRecommendation,
     getScore,
     insertVote,
     deleteRecommendation,
-    selectRandomRecommendation
+    selectRandomRecommendation,
+    selectTopRecommendation
 };

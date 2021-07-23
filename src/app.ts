@@ -13,6 +13,8 @@ app.post("/recommendations/:id/upvote", eventController.recommendationUpVote);
 
 app.post("/recommendations/:id/downvote", eventController.recommendationDownVote);
 
-app.get("/recommendations/random", eventController.getRandomRecommendation)
+app.get("/recommendations/random", eventController.getRandomRecommendation);
+
+app.get("/recommendations/top/:amount", eventController.getTopRecommendation);
 
 export default app;
