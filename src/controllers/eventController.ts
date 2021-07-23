@@ -21,7 +21,22 @@ async function recommendationUpVote(req: Request, res: Response) {
     try {
         const validVote = await voteValidation(req.params);
         
-        const result = await eventService.vote(validVote);
+        const result = await eventService.upVote(validVote);
+        
+        if (result === false) return res.sendStatus(400);
+
+        return res.sendStatus(200);
+    } catch (e) {
+        const status = sendError(e);
+        return res.sendStatus(status);
+    }
+}
+
+async function recommendationDownVote(req: Request, res: Response) {
+    try {
+        const validVote = await voteValidation(req.params);
+        
+        const result = await eventService.downVote(validVote);
         
         if (result === false) return res.sendStatus(400);
 
@@ -45,4 +60,4 @@ function sendError(e: Error): number {
     }
 }
 
-export { postRecommendation, recommendationUpVote };
+export { postRecommendation, recommendationUpVote, recommendationDownVote };

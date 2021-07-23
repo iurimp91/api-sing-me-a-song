@@ -29,4 +29,11 @@ async function insertVote(id: Number, score: Number) {
     `,[score, id]);
 }
 
-export { insertRecommendation, getScore, insertVote };
+async function deleteRecommendation(id: Number) {
+    await connection.query(`
+        DELETE FROM recommendations
+        WHERE id = $1
+    `, [id]);
+}
+
+export { insertRecommendation, getScore, insertVote, deleteRecommendation };

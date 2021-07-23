@@ -11,4 +11,6 @@ app.post("/recommendations", eventController.postRecommendation);
 
 app.post("/recommendations/:id/upvote", eventController.recommendationUpVote);
 
+app.post("/recommendations/:id/downvote", eventController.recommendationDownVote);
+
 export default app;

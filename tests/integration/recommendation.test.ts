@@ -68,3 +68,29 @@ describe("POST /recommendations/:id/upvote", () => {
         expect(response.status).toEqual(200);
     });
 });
+
+describe("POST /recommendations/:id/downvote", () => {
+    it("should answer with status 400 for invalid params", async () => {
+        const response = await supertest(app).post("/recommendations/abc/downvote");
+
+        expect(response.status).toEqual(400);
+    });
+
+    it("should answer with status 400 for non existing recommendation", async () => {
+        const response = await supertest(app).post("/recommendations/1000/downvote");
+
+        expect(response.status).toEqual(400);
+    });
+
+    it("should answer with status 200 for valid params and score higher than -5", async () => {
+        const response = await supertest(app).post(`/recommendations/${id}/downvote`);
+
+        expect(response.status).toEqual(200);
+    });
+
+    it("should answer with status 200 and delete recommendation for valid params and score equal -5", async () => {
+        const response = await supertest(app).post(`/recommendations/${id}/downvote`);
+        // acertar esse teste depois de criar a rota get
+        expect(response.status).toEqual(200);
+    });
+});
