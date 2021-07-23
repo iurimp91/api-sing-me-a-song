@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import connection from "../database";
 
 async function insertRecommendation(body: Object) {
@@ -36,4 +37,40 @@ async function deleteRecommendation(id: Number) {
     `, [id]);
 }
 
-export { insertRecommendation, getScore, insertVote, deleteRecommendation };
+async function selectRandomRecommendation(random: Number): Promise<Object> {
+    let result: QueryResult<Object>;
+    
+    if (random > 0.3) {
+        result = await connection.query(`
+            SELECT * FROM recommendations
+            WHERE score > 10000
+            ORDER BY RANDOM()
+            LIMIT 1
+        `);    
+    } else {
+        result = await connection.query(`
+            SELECT * FROM recommendations
+            WHERE score <= 10
+            ORDER BY RANDOM()
+            LIMIT 1
+        `); 
+    }
+
+    if (result.rows[0] === undefined) {
+        result = await connection.query(`
+            SELECT * FROM recommendations
+            ORDER BY RANDOM()
+            LIMIT 1
+        `);
+    }
+    
+    return result.rows[0];
+}
+
+export {
+    insertRecommendation,
+    getScore,
+    insertVote,
+    deleteRecommendation,
+    selectRandomRecommendation
+};

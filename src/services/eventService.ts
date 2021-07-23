@@ -21,11 +21,17 @@ async function downVote(id: Number) {
     
     const newScore = score - 1;
 
-    if (newScore === -5) {
+    if (newScore < -5) {
         await eventRepository.deleteRecommendation(id);
     } else {
         await eventRepository.insertVote(id, newScore);
     }
 }
 
-export { createRecommendation, upVote, downVote };
+async function getRandomRecommendation() {
+    const random = Math.random();
+
+    const response = await eventRepository.selectRandomRecommendation(random);
+}
+
+export { createRecommendation, upVote, downVote, getRandomRecommendation };

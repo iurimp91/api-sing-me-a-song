@@ -47,6 +47,17 @@ async function recommendationDownVote(req: Request, res: Response) {
     }
 }
 
+async function getRandomRecommendation(eq: Request, res: Response) {
+    try {
+        const result = await eventService.getRandomRecommendation();
+
+        return res.sendStatus(200);
+    } catch (e) {
+        const status = sendError(e);
+        return res.sendStatus(status);
+    }
+}
+
 function sendError(e: Error): number {
     console.log(e);
     if (
@@ -60,4 +71,9 @@ function sendError(e: Error): number {
     }
 }
 
-export { postRecommendation, recommendationUpVote, recommendationDownVote };
+export {
+    postRecommendation,
+    recommendationUpVote,
+    recommendationDownVote,
+    getRandomRecommendation 
+};
