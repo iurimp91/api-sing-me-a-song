@@ -12,27 +12,36 @@ async function postRecommendation(req: Request, res: Response) {
         
         return res.sendStatus(200);
     } catch (e) {
-        console.log(e);
-        if (e.message.includes("name") || e.message.includes("youtubeLink")) {
-            return res.sendStatus(400);
-        } else {
-            return res.sendStatus(500);
-        }
+        const status = sendError(e);
+        return res.sendStatus(status);
     }
 }
 
 async function recommendationUpVote(req: Request, res: Response) {
     try {
         const validVote = await voteValidation(req.params);
-
+        
         const result = await eventService.vote(validVote);
         
         if (result === false) return res.sendStatus(400);
 
         return res.sendStatus(200);
     } catch (e) {
-        console.log(e);
-        return res.sendStatus(500);
+        const status = sendError(e);
+        return res.sendStatus(status);
+    }
+}
+
+function sendError(e: Error): number {
+    console.log(e);
+    if (
+        e.message.includes("name")
+        || e.message.includes("youtubeLink")
+        || e.message.includes("id")
+    ) {
+        return 400;
+    } else {
+        return 500;
     }
 }
 

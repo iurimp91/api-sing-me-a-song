@@ -23,6 +23,6 @@ export async function voteValidation(params: Object): Promise<Number> {
     });
 
     const validParams = await schema.validateAsync(params);
-
+    
     return validParams.id;
 }

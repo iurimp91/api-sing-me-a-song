@@ -17,8 +17,8 @@ async function getScore(id: Number) {
     `, [id]);
 
     const score = result.rows[0]?.score;
-    
-    return score || false;
+
+    return score === undefined ? false : score;
 }
 
 async function insertVote(id: Number, score: Number) {
