@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { bodyValidation, voteValidation } from "../validations/recommendationValidation";
 
 import * as eventService from "../services/eventService";
+import { QueryResult } from "pg";
 
 async function postRecommendation(req: Request, res: Response) {
     try {
@@ -51,7 +52,7 @@ async function getRandomRecommendation(eq: Request, res: Response) {
     try {
         const result = await eventService.getRandomRecommendation();
 
-        return res.sendStatus(200);
+        return res.send(result);
     } catch (e) {
         const status = sendError(e);
         return res.sendStatus(status);

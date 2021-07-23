@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import * as eventRepository from "../repositories/eventRepository";
 
 async function createRecommendation(body: Object) {
@@ -32,6 +33,8 @@ async function getRandomRecommendation() {
     const random = Math.random();
 
     const response = await eventRepository.selectRandomRecommendation(random);
+
+    return response;
 }
 
 export { createRecommendation, upVote, downVote, getRandomRecommendation };

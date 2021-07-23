@@ -21,10 +21,7 @@ afterAll(async () => {
 
 describe("POST /recommendations", () => {
     function createBody(name: String, youtubeLink: String) {
-        return {
-            name,
-            youtubeLink
-        };
+        return { name, youtubeLink };
     }
 
     it("should answer with status 400 for invalid body", async () => {
@@ -93,7 +90,7 @@ describe("POST /recommendations/:id/downvote", () => {
 
     it("should answer with status 200 and delete recommendation for valid params and score less than -5", async () => {
         const voteResponse = await supertest(app).post(`/recommendations/${invalidId}/downvote`);
-        // acertar esse teste depois de criar a rota get
+        
         const deleteResponse = await connection.query(`
             SELECT * FROM recommendations
             WHERE id = $1
@@ -103,3 +100,7 @@ describe("POST /recommendations/:id/downvote", () => {
         expect(deleteResponse.rows[0]).toEqual(undefined);
     });
 });
+
+// describe("POST /recommendations/:id/downvote", () => {
+//     it("should answer with status ")
+// });
