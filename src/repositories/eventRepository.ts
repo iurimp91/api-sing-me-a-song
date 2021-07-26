@@ -1,8 +1,10 @@
 import { QueryResult } from "pg";
 import connection from "../database";
 
-async function insertRecommendation(body: Object) {
-    const { name, youtubeLink } = Object(body);
+import { Body } from "../interfaces/interfaces"
+
+async function insertRecommendation(body: Body) {
+    const { name, youtubeLink } = body;
     
     await connection.query(`
         INSERT INTO recommendations

@@ -1,6 +1,8 @@
 import * as eventRepository from "../repositories/eventRepository";
 
-async function createRecommendation(body: Object) {
+import { Body } from "../interfaces/interfaces"
+
+async function createRecommendation(body: Body) {
     await eventRepository.insertRecommendation(body);
 }
 

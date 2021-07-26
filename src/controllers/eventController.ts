@@ -4,9 +4,12 @@ import { bodyValidation, voteValidation, amountValidation } from "../validations
 
 import * as eventService from "../services/eventService";
 
+import { Body } from "../interfaces/interfaces";
+
 async function postRecommendation(req: Request, res: Response) {
     try {
-        const validBody = await bodyValidation(req.body);
+        const body: Body = req.body;
+        const validBody = await bodyValidation(body);
 
         await eventService.createRecommendation(validBody);
         
