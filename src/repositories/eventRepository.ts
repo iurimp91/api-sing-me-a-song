@@ -1,7 +1,7 @@
 import { QueryResult } from "pg";
 import connection from "../database";
 
-import { Body } from "../interfaces/interfaces"
+import { Body, RecommendationBody } from "../interfaces/interfaces"
 
 async function insertRecommendation(body: Body) {
     const { name, youtubeLink } = body;
@@ -39,38 +39,35 @@ async function deleteRecommendation(id: number) {
     `, [id]);
 }
 
-async function selectRandomRecommendation(random: number): Promise<Object> {
-    let result: QueryResult<Object>;
-    
+async function selectRandomRecommendation(random: number) {
+    let result: QueryResult<RecommendationBody>;
+    let whereCondition: string;
+
     if (random > 0.3) {
-        result = await connection.query(`
-            SELECT * FROM recommendations
-            WHERE score > 10000
-            ORDER BY RANDOM()
-            LIMIT 1
-        `);    
+        whereCondition = "WHERE score > 10"
     } else {
-        result = await connection.query(`
-            SELECT * FROM recommendations
-            WHERE score <= 10
-            ORDER BY RANDOM()
-            LIMIT 1
-        `); 
+        whereCondition = "WHERE score <= 10"
     }
 
+    let query = `
+        SELECT * FROM recommendations
+        ${whereCondition}
+        ORDER BY RANDOM()
+        LIMIT 1
+    `;
+
+    result = await connection.query(query);
+
     if (result.rows[0] === undefined) {
-        result = await connection.query(`
-            SELECT * FROM recommendations
-            ORDER BY RANDOM()
-            LIMIT 1
-        `);
+        whereCondition = "";
+        result = await connection.query(query);
     }
     
     return result.rows[0] === undefined ? 404 : result.rows[0];
 }
 
 async function selectTopRecommendation(amount: number) {
-    const result = await connection.query(`
+    const result: QueryResult<RecommendationBody> = await connection.query(`
         SELECT * FROM recommendations
         ORDER BY score DESC
         LIMIT $1    
