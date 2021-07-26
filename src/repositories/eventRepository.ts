@@ -13,33 +13,33 @@ async function insertRecommendation(body: Body) {
     `,[name, youtubeLink]);
 }
 
-async function getScore(id: Number) {
+async function getScore(id: number) {
     const result = await connection.query(`
         SELECT score FROM recommendations
         WHERE id = $1 
     `, [id]);
 
-    const score = result.rows[0]?.score;
+    const score: number = result.rows[0]?.score;
 
     return score === undefined ? false : score;
 }
 
-async function insertVote(id: Number, score: Number) {
+async function insertVote(id: number, score: number) {
     await connection.query(`
         UPDATE recommendations
-        SET score = $1
+        SET score = score + $1
         WHERE id = $2
-    `,[score, id]);
+    `,[id, score]);
 }
 
-async function deleteRecommendation(id: Number) {
+async function deleteRecommendation(id: number) {
     await connection.query(`
         DELETE FROM recommendations
         WHERE id = $1
     `, [id]);
 }
 
-async function selectRandomRecommendation(random: Number): Promise<Object> {
+async function selectRandomRecommendation(random: number): Promise<Object> {
     let result: QueryResult<Object>;
     
     if (random > 0.3) {
@@ -69,7 +69,7 @@ async function selectRandomRecommendation(random: Number): Promise<Object> {
     return result.rows[0] === undefined ? 404 : result.rows[0];
 }
 
-async function selectTopRecommendation(amount: Number) {
+async function selectTopRecommendation(amount: number) {
     const result = await connection.query(`
         SELECT * FROM recommendations
         ORDER BY score DESC

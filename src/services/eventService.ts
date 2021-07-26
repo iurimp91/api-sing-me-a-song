@@ -6,28 +6,27 @@ async function createRecommendation(body: Body) {
     await eventRepository.insertRecommendation(body);
 }
 
-async function upVote(id: Number) {
+async function upVote(id: number) {
     const score = await eventRepository.getScore(id);
     
     if (score === false) return false;
     
-    const newScore = score + 1;
-    
-    await eventRepository.insertVote(id, newScore);
+    await eventRepository.insertVote(id, 1);
+    return true;
 }
 
-async function downVote(id: Number) {
+async function downVote(id: number) {
     const score = await eventRepository.getScore(id);
     
-    if (score === false) return false;
-    
-    const newScore = score - 1;
-
-    if (newScore < -5) {
+    if (score === false) {
+        return false;
+    } else if (score === -5)  {
         await eventRepository.deleteRecommendation(id);
-    } else {
-        await eventRepository.insertVote(id, newScore);
+        return;
     }
+    
+    await eventRepository.insertVote(id, -1);
+    return true;
 }
 
 async function getRandomRecommendation() {
@@ -38,7 +37,7 @@ async function getRandomRecommendation() {
     return response;
 }
 
-async function getTopRecommendation(amount: Number) {
+async function getTopRecommendation(amount: number) {
     const response = await eventRepository.selectTopRecommendation(amount);
 
     return response;

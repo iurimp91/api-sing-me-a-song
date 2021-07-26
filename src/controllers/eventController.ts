@@ -4,48 +4,50 @@ import { bodyValidation, voteValidation, amountValidation } from "../validations
 
 import * as eventService from "../services/eventService";
 
-import { Body } from "../interfaces/interfaces";
+import { Body, VoteParams } from "../interfaces/interfaces";
 
 async function postRecommendation(req: Request, res: Response) {
     try {
         const body: Body = req.body;
-        const validBody = await bodyValidation(body);
+        const recommendation = await bodyValidation(body);
 
-        await eventService.createRecommendation(validBody);
+        await eventService.createRecommendation(recommendation);
         
         return res.sendStatus(200);
     } catch (e) {
-        const status = sendError(e);
+        const status = getErrorStatus(e);
         return res.sendStatus(status);
     }
 }
 
 async function recommendationUpVote(req: Request, res: Response) {
     try {
-        const validVote = await voteValidation(req.params);
+        const params: VoteParams = { id: Number(req.params.id) };
+        const id = await voteValidation(params);
         
-        const result = await eventService.upVote(validVote);
+        const result = await eventService.upVote(id);
         
         if (result === false) return res.sendStatus(400);
 
         return res.sendStatus(200);
     } catch (e) {
-        const status = sendError(e);
+        const status = getErrorStatus(e);
         return res.sendStatus(status);
     }
 }
 
 async function recommendationDownVote(req: Request, res: Response) {
     try {
-        const validVote = await voteValidation(req.params);
+        const params: VoteParams = { id: Number(req.params.id) };
+        const id = await voteValidation(params);
         
-        const result = await eventService.downVote(validVote);
+        const result = await eventService.downVote(id);
         
         if (result === false) return res.sendStatus(400);
 
         return res.sendStatus(200);
     } catch (e) {
-        const status = sendError(e);
+        const status = getErrorStatus(e);
         return res.sendStatus(status);
     }
 }
@@ -56,7 +58,7 @@ async function getRandomRecommendation(req: Request, res: Response) {
 
         return result === 404 ? res.sendStatus(404) : res.send(result);
     } catch (e) {
-        const status = sendError(e);
+        const status = getErrorStatus(e);
         return res.sendStatus(status);
     }
 }
@@ -69,12 +71,12 @@ async function getTopRecommendation(req: Request, res: Response) {
 
         return result === 404 ? res.sendStatus(404) : res.send(result);
     } catch (e) {
-        const status = sendError(e);
+        const status = getErrorStatus(e);
         return res.sendStatus(status);
     }
 }
 
-function sendError(e: Error): number {
+function getErrorStatus(e: Error): number {
     console.log(e);
     if (
         e.message.includes("name")

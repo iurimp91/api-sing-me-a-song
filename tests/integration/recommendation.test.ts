@@ -83,13 +83,13 @@ describe("POST /recommendations/:id/downvote", () => {
         expect(response.status).toEqual(400);
     });
 
-    it("should answer with status 200 for valid params and score higher than or equal -5", async () => {
+    it("should answer with status 200 for valid params and score higher than -5", async () => {
         const response = await supertest(app).post(`/recommendations/${validId}/downvote`);
 
         expect(response.status).toEqual(200);
     });
 
-    it("should answer with status 200 and delete recommendation for valid params and score less than -5", async () => {
+    it("should answer with status 200 and delete recommendation for valid params and score equal to -5", async () => {
         const voteResponse = await supertest(app).post(`/recommendations/${invalidId}/downvote`);
         
         const deleteResponse = await connection.query(`
