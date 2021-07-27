@@ -3,11 +3,14 @@ import "../../src/setup";
 import supertest from "supertest";
 import app from "../../src/app";
 
-import { clearDatabase, endConnection, insertRecommendation } from "../utils/database";
-import connection from "../../src/database";
+import { clearDatabase, endConnection } from "../utils/database";
+import { insertRecommendation } from "../factories/recommendationFactory";
 
-let validId:Number;
-let invalidId:Number;
+import connection from "../../src/database";
+import { valid } from "joi";
+
+let validId:number;
+let invalidId:number;
 
 beforeEach(async () => {
     await clearDatabase();
@@ -21,7 +24,7 @@ afterAll(async () => {
 });
 
 describe("POST /recommendations", () => {
-    function createBody(name: String, youtubeLink: String) {
+    function createBody(name: string, youtubeLink: string) {
         return { name, youtubeLink };
     }
 
@@ -41,12 +44,18 @@ describe("POST /recommendations", () => {
         expect(response.status).toEqual(400);
     });
 
-    it("should answer with status 200 for valid body", async () => {
+    it("should answer with status 200 for valid body ans save recommendation", async () => {
         const body = createBody("Teste", "https://www.youtube.com/watch?v=uLv20oZqWUI");
+
+        const beforeInsert = await connection.query(`SELECT * FROM recommendations`);
 
         const response = await supertest(app).post("/recommendations").send(body);
 
+        const afterInsert = await connection.query(`SELECT * FROM recommendations`);
+
         expect(response.status).toEqual(200);
+        expect(beforeInsert.rows.length).toBe(3);
+        expect(afterInsert.rows.length).toBe(4);
     });
 });
 
@@ -63,10 +72,21 @@ describe("POST /recommendations/:id/upvote", () => {
         expect(response.status).toEqual(400);
     });
 
-    it("should answer with status 200 for valid params", async () => {
+    it("should answer with status 200 for valid params and increase score by 1", async () => {
+        const beforeVote = await connection.query(`
+            SELECT score FROM recommendations
+            WHERE id = $1
+        `, [validId]);
+        
         const response = await supertest(app).post(`/recommendations/${validId}/upvote`);
 
+        const afterVote = await connection.query(`
+            SELECT score FROM recommendations
+            WHERE id = $1
+        `, [validId]);
+
         expect(response.status).toEqual(200);
+        expect(afterVote.rows[0].score - beforeVote.rows[0].score).toBe(1);
     });
 });
 
@@ -83,10 +103,23 @@ describe("POST /recommendations/:id/downvote", () => {
         expect(response.status).toEqual(400);
     });
 
-    it("should answer with status 200 for valid params and score higher than -5", async () => {
+    it("should answer with status 200 for valid params and score higher than -5 and decrease score by 1", async () => {
+        const beforeVote = await connection.query(`
+            SELECT score FROM recommendations
+            WHERE id = $1
+        `, [validId]);
+
+        console.log(beforeVote.rows)
+        
         const response = await supertest(app).post(`/recommendations/${validId}/downvote`);
 
+        const afterVote = await connection.query(`
+            SELECT score FROM recommendations
+            WHERE id = $1
+        `, [validId]);
+
         expect(response.status).toEqual(200);
+        expect(beforeVote.rows[0].score - afterVote.rows[0].score).toBe(1);
     });
 
     it("should answer with status 200 and delete recommendation for valid params and score equal to -5", async () => {

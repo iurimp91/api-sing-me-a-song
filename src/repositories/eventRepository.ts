@@ -29,7 +29,7 @@ async function insertVote(id: number, score: number) {
         UPDATE recommendations
         SET score = score + $1
         WHERE id = $2
-    `,[id, score]);
+    `,[score, id]);
 }
 
 async function deleteRecommendation(id: number) {
