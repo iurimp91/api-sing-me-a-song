@@ -4,7 +4,7 @@ import { bodyValidation, voteValidation, amountValidation } from "../validations
 
 import * as eventService from "../services/eventService";
 
-import { Body, VoteParams } from "../interfaces/interfaces";
+import { Body, VoteParams, AmountParams } from "../interfaces/interfaces";
 
 async function postRecommendation(req: Request, res: Response) {
     try {
@@ -65,7 +65,8 @@ async function getRandomRecommendation(req: Request, res: Response) {
 
 async function getTopRecommendation(req: Request, res: Response) {
     try {
-        const validAmount = await amountValidation(req.params);
+        const params: AmountParams = { amount: Number(req.params.amount) };
+        const validAmount = await amountValidation(params);
 
         const result = await eventService.getTopRecommendation(validAmount);
 

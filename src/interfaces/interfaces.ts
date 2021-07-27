@@ -13,3 +13,7 @@ export interface RecommendationBody {
     youtubeLink: string,
     score: number,
 }
+
+export interface AmountParams {
+    amount: number,
+}

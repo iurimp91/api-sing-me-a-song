@@ -1,7 +1,7 @@
 import joi from "joi";
 import { stripHtml } from "string-strip-html";
 
-import { Body, VoteParams } from "../interfaces/interfaces";
+import { Body, VoteParams, AmountParams } from "../interfaces/interfaces";
 
 const youtubeRegEx = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 
@@ -29,12 +29,12 @@ export async function voteValidation(params: VoteParams): Promise<number> {
     return validParams.id;
 }
 
-export async function amountValidation(params: Object): Promise<number> {
+export async function amountValidation(params: AmountParams): Promise<number> {
     const schema = joi.object({
         amount: joi.number().integer().min(1).required()
     });
 
-    const validParams = await schema.validateAsync(params);
+    const validParams: AmountParams = await schema.validateAsync(params);
     
     return validParams.amount;
 }
